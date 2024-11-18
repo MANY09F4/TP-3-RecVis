@@ -191,9 +191,9 @@ def main():
     # load model and transform
     model, data_transforms = ModelFactory(args.model_name).get_all()
     _, data_transforms_val = ModelFactory(args.model_name, test_mode=True).get_all() #pourquoi ?
-    if args.model is not None:                  #pourquoi ?
-        state_dict = torch.load(args.model)
-        model.load_state_dict(state_dict)
+    # if args.model is not None:                  #pourquoi ?
+    #     state_dict = torch.load(args.model)
+    #     model.load_state_dict(state_dict)
     if use_cuda:
         print("Using GPU")
         model.cuda()
