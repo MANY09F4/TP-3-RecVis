@@ -1,7 +1,95 @@
 import torch.nn as nn
 import torch.nn.functional as F
+from transformers import ViTModel
+from torchvision import models
 
 nclasses = 500
+
+class ResNet18(nn.Module):
+    def __init__(self, num_classes=500):
+        super(ResNet18, self).__init__()
+        self.model = models.resnet18(pretrained=True)
+        # Remplace le dernier layer pour correspondre aux 500 classes
+        self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
+
+class ResNet50(nn.Module):
+    def __init__(self, num_classes=500):
+        super(ResNet50, self).__init__()
+        self.model = models.resnet50(pretrained=True)
+        # Remplace le dernier layer pour correspondre aux 500 classe
+        # s
+        self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
+
+class ResNet101(nn.Module):
+    def __init__(self, num_classes=500):
+        super(ResNet101, self).__init__()
+        self.model = models.resnet101(pretrained=True)
+        # Remplace le dernier layer pour correspondre aux 500 classes
+        self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
+
+class EfficientNetB4(nn.Module):
+    def __init__(self, num_classes=500):
+        super(EfficientNetB4, self).__init__()
+        self.model = models.efficientnet_b4(pretrained=True)
+        # Remplace le dernier layer pour correspondre aux 500 classes
+        in_features = self.model.classifier[-1].in_features
+        self.model.classifier[-1] = nn.Linear(in_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
+
+class EfficientNetB5(nn.Module):
+    def __init__(self, num_classes=500):
+        super(EfficientNetB5, self).__init__()
+        self.model = models.efficientnet_b5(pretrained=True)
+        # Remplace le dernier layer pour correspondre aux 500 classes
+        in_features = self.model.classifier[-1].in_features
+        self.model.classifier[-1] = nn.Linear(in_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
+
+class EfficientNetB6(nn.Module):
+    def __init__(self, num_classes=500):
+        super(EfficientNetB6, self).__init__()
+        self.model = models.efficientnet_b6(pretrained=True)
+        # Remplace le dernier layer pour correspondre aux 500 classes
+        in_features = self.model.classifier[-1].in_features
+        self.model.classifier[-1] = nn.Linear(in_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
+
+class EfficientNetB7(nn.Module):
+    def __init__(self, num_classes=500):
+        super(EfficientNetB7, self).__init__()
+        self.model = models.efficientnet_b7(pretrained=True)
+        # Remplace le dernier layer pour correspondre aux 500 classes
+        in_features = self.model.classifier[-1].in_features
+        self.model.classifier[-1] = nn.Linear(in_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
+
+class VitBase16(nn.Module):
+    def __init__(self, num_classes=500):
+        super(VitBase16, self).__init__()
+        self.model = ViTModel.from_pretrained('google/vit-base-patch16-224-in21k')
+        # Ajouter un classificateur pour les 500 classes
+        self.classifier = nn.Linear(self.model.config.hidden_size, num_classes)
+
+    def forward(self, x):
+        outputs = self.model(x).last_hidden_state[:, 0, :]
+        return self.classifier(outputs)
 
 
 class Net(nn.Module):
