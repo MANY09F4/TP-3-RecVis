@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from transformers import ViTModel
 from torchvision import models
+from timm import create_model
 
 nclasses = 500
 
@@ -91,6 +92,16 @@ class VitBase16(nn.Module):
         outputs = self.model(x).last_hidden_state[:, 0, :]
         return self.classifier(outputs)
 
+class ConvNextBase(nn.Module):
+    def __init__(self, num_classes=500):
+        super(ConvNextBase, self).__init__()
+        # Charger le modèle pré-entraîné ConvNeXt
+        self.model = create_model('convnext_base', pretrained=True)
+        # Remplacer la dernière couche (classificateur) pour s'adapter aux 500 classes
+        self.model.head = nn.Linear(self.model.num_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
 
 class Net(nn.Module):
     def __init__(self):
