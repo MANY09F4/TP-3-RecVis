@@ -54,7 +54,7 @@ data_transforms_224_DA = transforms.Compose(
     [
         # Augmentation
         transforms.Resize((224, 224)),
-        transforms.Grayscale(num_output_channels=3), # Convertir certaines images en niveaux de gris
+        #transforms.Grayscale(num_output_channels=3), # Convertir certaines images en niveaux de gris
         transforms.RandomHorizontalFlip(p=0.5),  # Flip horizontal aléatoire
         transforms.RandomRotation(15),          # Rotation aléatoire jusqu'à ±15°
         #transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),  # Recadrage aléatoire (zoom-in)
@@ -62,7 +62,7 @@ data_transforms_224_DA = transforms.Compose(
 
         # Prétraitement
         transforms.ToTensor(),                  # Convertir en tenseur
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),  # Normalisation pour niveaux de gris
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalisation pour niveaux de gris
     ]
 )
 
