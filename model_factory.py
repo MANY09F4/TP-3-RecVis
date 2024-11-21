@@ -1,7 +1,7 @@
 """Python file to instantite the model and the transform that goes with it."""
 
 from data import data_transforms_224_DA, data_transforms, data_transforms_224, data_transforms_224_da, data_transforms_384, data_transforms_edge, data_transforms_224_da, data_transforms_400, data_transforms_512
-from model import ConvNextBase, Net, ResNet18, ResNet50, ResNet101, EfficientNetB4, VitBase16, EfficientNetB5, EfficientNetB6, EfficientNetB7
+from model import EfficientNetV2M, ConvNextBase, Net, ResNet18, ResNet50, ResNet101, EfficientNetB4, VitBase16, EfficientNetB5, EfficientNetB6, EfficientNetB7
 
 
 class ModelFactory:
@@ -32,6 +32,8 @@ class ModelFactory:
             return VitBase16()
         if self.model_name == "convnext_base":
             return ConvNextBase()
+        if self.model_name == "eff_Net_V2M":
+            return EfficientNetV2M()
         else:
             raise NotImplementedError("Model not implemented")
 
@@ -65,6 +67,11 @@ class ModelFactory:
             return data_transforms_224_DA
 
         if self.model_name == "convnext_base":
+            if self.test_mode:
+                return data_transforms_224_DA
+            return data_transforms_224_DA
+
+        if self.model_name == "eff_Net_V2M":
             if self.test_mode:
                 return data_transforms_224_DA
             return data_transforms_224_DA

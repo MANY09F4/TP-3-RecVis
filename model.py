@@ -104,6 +104,18 @@ class ConvNextBase(nn.Module):
     def forward(self, x):
         return self.model(x)
 
+class EfficientNetV2M(nn.Module):
+    def __init__(self, num_classes=500):
+        super(EfficientNetV2M, self).__init__()
+        # Charger EfficientNetV2-M depuis timm avec poids pré-entraînés
+        self.model = create_model('tf_efficientnetv2_m.in21k_ft_in1k', pretrained=True)
+        # Remplacer la dernière couche pour correspondre au nombre de classes
+        in_features = self.model.classifier.in_features
+        self.model.classifier = nn.Linear(in_features, num_classes)
+
+    def forward(self, x):
+        return self.model(x)
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
