@@ -98,7 +98,8 @@ class ConvNextBase(nn.Module):
         # Charger le modèle pré-entraîné ConvNeXt
         self.model = create_model('convnext_base', pretrained=True)
         # Remplacer la dernière couche (classificateur) pour s'adapter aux 500 classes
-        self.model.head = nn.Linear(self.model.num_features, num_classes)
+        in_features = self.model.head.in_features  # Accéder au nombre de features d'entrée de la dernière couche
+        self.model.head = nn.Linear(in_features, num_classes)
 
     def forward(self, x):
         return self.model(x)
