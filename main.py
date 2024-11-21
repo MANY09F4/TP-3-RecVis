@@ -190,7 +190,7 @@ def main():
 
     # load model and transform
     model, data_transforms = ModelFactory(args.model_name).get_all()
-    #_, data_transforms_val = ModelFactory(args.model_name, test_mode=True).get_all() #pourquoi ?
+    _, data_transforms_val = ModelFactory(args.model_name, test_mode=True).get_all() #pourquoi ?
     # if args.model is not None:                  #pourquoi ?
     #     state_dict = torch.load(args.model)
     #     model.load_state_dict(state_dict)
@@ -201,43 +201,43 @@ def main():
         print("Using CPU")
 
     # Data initialization and loading
-    train_loader = torch.utils.data.DataLoader(
-        datasets.ImageFolder(args.data + "/train_images", transform=data_transforms),
-        batch_size=args.batch_size,
-        shuffle=True,
-        num_workers=args.num_workers,
-    )
-
-    val_loader = torch.utils.data.DataLoader(
-        datasets.ImageFolder(args.data + "/val_images", transform=data_transforms),
-        batch_size=args.batch_size,
-        shuffle=True,
-        num_workers=args.num_workers,
-    )
+    # train_loader = torch.utils.data.DataLoader(
+    #     datasets.ImageFolder(args.data + "/train_images", transform=data_transforms),
+    #     batch_size=args.batch_size,
+    #     shuffle=True,
+    #     num_workers=args.num_workers,
+    # )
 
     # val_loader = torch.utils.data.DataLoader(
-    #     datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val),
+    #     datasets.ImageFolder(args.data + "/val_images", transform=data_transforms),
     #     batch_size=args.batch_size,
     #     shuffle=False,
     #     num_workers=args.num_workers,
     # )
 
+    val_loader = torch.utils.data.DataLoader(
+        datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val),
+        batch_size=args.batch_size,
+        shuffle=False,
+        num_workers=args.num_workers,
+    )
+
 
 
     # Data initialization and loading
-    #train_dataset = datasets.ImageFolder(args.data + "/train_images", transform=data_transforms)
-    #val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms)  # Même transformation que le train
+    train_dataset = datasets.ImageFolder(args.data + "/train_images", transform=data_transforms)
+    val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms)  # Même transformation que le train
 
     # Combine train and validation datasets
-    #combined_dataset = torch.utils.data.ConcatDataset([train_dataset, val_dataset])
+    combined_dataset = torch.utils.data.ConcatDataset([train_dataset, val_dataset])
 
     # DataLoader for the combined dataset
-    # train_loader = torch.utils.data.DataLoader(
-    #     combined_dataset,
-    #     batch_size=args.batch_size,
-    #     shuffle=True,  # Shuffle les données combinées
-    #     num_workers=args.num_workers,
-    # )
+    train_loader = torch.utils.data.DataLoader(
+        combined_dataset,
+        batch_size=args.batch_size,
+        shuffle=True,  # Shuffle les données combinées
+        num_workers=args.num_workers,
+    )
 
     # Setup optimizer
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)

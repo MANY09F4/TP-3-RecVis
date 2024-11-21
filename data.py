@@ -24,6 +24,16 @@ data_transforms_224 = transforms.Compose(
     ]
 )
 
+data_transforms_224_gray_only = transforms.Compose(
+    [
+        transforms.Resize((224, 224)),
+        transforms.Grayscale(num_output_channels=3),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+    ]
+)
+
+
 data_transforms_400 = transforms.Compose(
     [
         transforms.Resize((400, 400)),
