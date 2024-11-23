@@ -116,5 +116,5 @@ def main() -> None:
 
     print("Succesfully wrote " + args.outfile + ", you can upload this file to the kaggle competition website")
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     main()
