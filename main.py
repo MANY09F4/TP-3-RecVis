@@ -7,6 +7,7 @@ import torch.optim as optim
 from torchvision import datasets
 from torch.utils.data import Subset
 import numpy as np
+from collections import defaultdict
 
 from model_factory import ModelFactory
 
@@ -81,15 +82,37 @@ def opts() -> argparse.ArgumentParser:
         help="number of workers for data loading",
     )
     parser.add_argument(
-        "--subset_size",
+        "--images_per_class",
         type=int,
         default=None,
-        metavar="SS",
-        help="number of samples to use from the dataset for quick testing (default: None, use full dataset)",
+        metavar="IPC",
+        help="number of images to select per class for the subsets (default: None, use all images)",
     )
     args = parser.parse_args()
     return args
 
+def create_class_balanced_subset(dataset, images_per_class, seed):
+    """Create a subset with a fixed number of images per class."""
+    if images_per_class is None:
+        return dataset  # Use the full dataset
+
+    # Group indices by class
+    class_to_indices = defaultdict(list)
+    for idx, (_, label) in enumerate(dataset.samples):
+        class_to_indices[label].append(idx)
+
+    # Set random seed for reproducibility
+    np.random.seed(seed)
+
+    # Select a fixed number of images per class
+    selected_indices = []
+    for indices in class_to_indices.values():
+        if len(indices) > images_per_class:
+            selected_indices.extend(np.random.choice(indices, size=images_per_class, replace=False))
+        else:
+            selected_indices.extend(indices)  # Use all if fewer images are available
+
+    return Subset(dataset, selected_indices)
 
 def train(
     model: nn.Module,
@@ -181,13 +204,6 @@ def validation(
     )
     return validation_loss
 
-def create_subset(dataset, subset_size, seed):
-    """Create a subset of the dataset with random indices."""
-    if subset_size is None or subset_size >= len(dataset):
-        return dataset  # Use full dataset
-    np.random.seed(seed)
-    indices = np.random.choice(len(dataset), size=subset_size, replace=False)
-    return Subset(dataset, indices)
 
 def main():
     """Default Main Function."""
@@ -219,8 +235,8 @@ def main():
     train_dataset = datasets.ImageFolder(args.data + "/train_images", transform=data_transforms)
     val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val)
 
-    train_dataset = create_subset(train_dataset, args.subset_size, args.seed)
-    val_dataset = create_subset(val_dataset, int(args.subset_size*0.1), args.seed)
+    train_dataset = create_class_balanced_subset(train_dataset, args.images_per_class, args.seed)
+    val_dataset = create_class_balanced_subset(val_dataset, args.images_per_class, args.seed)
 
     #Data initialization and loading
     train_loader = torch.utils.data.DataLoader(
