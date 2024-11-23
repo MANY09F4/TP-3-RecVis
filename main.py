@@ -285,7 +285,7 @@ def main():
         optimizer = optim.SGD([
         {"params": model.classifier.parameters(), "lr": args.lr, "momentum": args.momentum},
         {"params": [param for name, param in model.backbone.named_parameters()
-                    if "encoder.layer.11" in name or "layer_norm" in name or "encoder.layer.10" in name or "encoder.layer.9" in name], "lr": args.lr/20, "momentum": args.momentum},
+                    if "encoder.layer.11" in name or "layer_norm" in name or "encoder.layer.10" in name or "encoder.layer.9" in name], "lr": args.lr/10, "momentum": args.momentum},
     ], weight_decay=1e-4)
     else :
         optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)

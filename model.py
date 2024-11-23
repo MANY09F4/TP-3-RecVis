@@ -156,10 +156,8 @@ class DinoV2_perso(nn.Module):
 
         # Ajouter une couche de classification pour 500 classes
         hidden_size = self.backbone.config.hidden_size  # Taille des embeddings de sortie (ex. 768)
-        self.classifier = nn.Sequential(nn.Linear(hidden_size, 600),
-                                        nn.ReLU(),
-                                        nn.Dropout(0.3),
-                                        nn.Linear(600, num_classes))  # Couche dense pour la classification
+        self.classifier = nn.Sequential(nn.Dropout(0.3),
+                                        nn.Linear(hidden_size, num_classes))  # Couche dense pour la classification
 
 
     def forward(self, x):
