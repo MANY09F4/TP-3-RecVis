@@ -220,7 +220,7 @@ def main():
     val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val)
 
     train_dataset = create_subset(train_dataset, args.subset_size, args.seed)
-    val_dataset = create_subset(val_dataset, args.subset_size*0.1, args.seed)
+    val_dataset = create_subset(val_dataset, int(args.subset_size*0.1), args.seed)
 
     #Data initialization and loading
     train_loader = torch.utils.data.DataLoader(
