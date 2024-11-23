@@ -236,7 +236,7 @@ def main():
     val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val)
 
     train_dataset = create_class_balanced_subset(train_dataset, args.images_per_class, args.seed)
-    val_dataset = create_class_balanced_subset(val_dataset, args.images_per_class, args.seed)
+    val_dataset = create_class_balanced_subset(val_dataset, np.floor(args.images_per_class*0.1)+1, args.seed)
 
     #Data initialization and loading
     train_loader = torch.utils.data.DataLoader(
