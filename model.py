@@ -1,8 +1,9 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from transformers import ViTModel
+from transformers import ViTModel, AutoModel
 from torchvision import models
 from timm import create_model
+from transformers import AutoModelForImageClassification
 
 nclasses = 500
 
@@ -115,6 +116,31 @@ class EfficientNetV2M(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+
+class DinoV2(nn.Module):
+    def __init__(self, num_classes=500, freeze_backbone=True):
+        super(DinoV2, self).__init__()
+        # Charger le modèle pré-entraîné
+        self.backbone = AutoModel.from_pretrained("facebook/dinov2-base")
+
+        # Optionnel : Geler les couches de la backbone
+        if freeze_backbone:
+            for name, param in self.backbone.named_parameters():
+                param.requires_grad = False
+
+        # Ajouter une couche de classification pour 500 classes
+        hidden_size = self.backbone.config.hidden_size  # Taille des embeddings de sortie (ex. 768)
+        self.classifier = nn.Linear(hidden_size, num_classes)  # Couche dense pour la classification
+
+
+    def forward(self, x):
+        # Passer l'entrée à travers la backbone
+        outputs = self.backbone(x)
+        # Extraire le token CLS (premier vecteur de la séquence)
+        cls_token = outputs.last_hidden_state[:, 0, :]
+        # Passer le token CLS dans le classificateur
+        logits = self.classifier(cls_token)
+        return logits
 
 class Net(nn.Module):
     def __init__(self):
