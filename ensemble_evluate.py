@@ -74,7 +74,7 @@ def main() -> None:
     for model_path, model_name in zip(args.models, args.model_names):
         state_dict = torch.load(model_path)
         model, data_transforms = ModelFactory(model_name=model_name, test_mode=True).get_all()
-        model.load_state_dict(state_dict)
+        model.load_state_dict(state_dict, strict=False)
         model.eval()
         if use_cuda:
             model.cuda()
