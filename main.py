@@ -281,14 +281,31 @@ def main():
     #optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 
         # Setup optimizer
-    if args.model_name == "dino_v2" :
+    if args.model_name == "DinoV2_perso":
+        # Groupes de paramètres avec learning rates spécifiques
         optimizer = optim.SGD([
-        {"params": model.classifier.parameters(), "lr": args.lr, "momentum": args.momentum},
-        {"params": [param for name, param in model.backbone.named_parameters()
-                    if "encoder.layer.11" in name or "layer_norm" in name or "encoder.layer.10" in name or "encoder.layer.9" in name], "lr": args.lr/10, "momentum": args.momentum},
-    ], weight_decay=1e-4)
-    else :
-        optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+            # Couche classifiante : learning rate élevé
+            {"params": model.classifier.parameters(), "lr": args.lr},
+
+            # Dernière couche (encoder.layer.11) : learning rate légèrement réduit
+            {"params": [param for name, param in model.backbone.named_parameters()
+                        if "encoder.layer.11" in name], "lr": args.lr / 10},
+
+            # Avant-dernière couche (encoder.layer.10) : learning rate encore plus réduit
+            {"params": [param for name, param in model.backbone.named_parameters()
+                        if "encoder.layer.10" in name], "lr": args.lr / 100},
+
+            # Avant-avant-dernière couche (encoder.layer.9) : learning rate encore plus réduit
+            {"params": [param for name, param in model.backbone.named_parameters()
+                        if "encoder.layer.9" in name], "lr": args.lr / 100},
+
+            # LayerNorm (régularisation finale) : learning rate intermédiaire
+            {"params": [param for name, param in model.backbone.named_parameters()
+                        if "layer_norm" in name], "lr": args.lr / 10},
+        ], momentum=args.momentum, weight_decay=1e-4)
+    else:
+        # Optimisation classique pour les autres modèles
+        optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=1e-4)
 
     # Loop over the epochs
     best_val_loss = 1e8
