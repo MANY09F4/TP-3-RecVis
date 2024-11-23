@@ -5,6 +5,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets
+from torch.utils.data import Subset
+import numpy as np
 
 from model_factory import ModelFactory
 
@@ -77,6 +79,13 @@ def opts() -> argparse.ArgumentParser:
         default=10,
         metavar="NW",
         help="number of workers for data loading",
+    )
+    parser.add_argument(
+        "--subset_size",
+        type=int,
+        default=None,
+        metavar="SS",
+        help="number of samples to use from the dataset for quick testing (default: None, use full dataset)",
     )
     args = parser.parse_args()
     return args
@@ -172,6 +181,13 @@ def validation(
     )
     return validation_loss
 
+def create_subset(dataset, subset_size, seed):
+    """Create a subset of the dataset with random indices."""
+    if subset_size is None or subset_size >= len(dataset):
+        return dataset  # Use full dataset
+    np.random.seed(seed)
+    indices = np.random.choice(len(dataset), size=subset_size, replace=False)
+    return Subset(dataset, indices)
 
 def main():
     """Default Main Function."""
@@ -190,7 +206,7 @@ def main():
 
     # load model and transform
     model, data_transforms = ModelFactory(args.model_name).get_all()
-    _, data_transforms_val = ModelFactory(args.model_name, test_mode=True).get_all() #pourquoi ?
+    _, data_transforms_val = ModelFactory(args.model_name, test_mode=True).get_all()
     # if args.model is not None:                  #pourquoi ?
     #     state_dict = torch.load(args.model)
     #     model.load_state_dict(state_dict)
@@ -199,6 +215,12 @@ def main():
         model.cuda()
     else:
         print("Using CPU")
+
+    train_dataset = datasets.ImageFolder(args.data + "/train_images", transform=data_transforms)
+    val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val)
+
+    train_dataset = create_subset(train_dataset, args.subset_size, args.seed)
+    val_dataset = create_subset(val_dataset, args.subset_size*0.1, args.seed)
 
     #Data initialization and loading
     train_loader = torch.utils.data.DataLoader(
