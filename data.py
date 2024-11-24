@@ -29,8 +29,8 @@ data_transforms_224_gray_only = transforms.Compose(
         transforms.Resize((224, 224)),
         transforms.Grayscale(num_output_channels=3),
         transforms.ToTensor(),
-        #transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-        transforms.Normalize(mean=[0.854, 0.854, 0.854], std=[0.191, 0.191, 0.191])
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        #transforms.Normalize(mean=[0.854, 0.854, 0.854], std=[0.191, 0.191, 0.191])
     ]
 )
 
