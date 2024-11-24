@@ -74,7 +74,7 @@ data_transforms_224_DA = transforms.Compose(
         transforms.ToTensor(),                               # PIL -> Tensor
 
         # Transformations sur Tensor
-        transforms.RandomApply([transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0))], p=0.3),  # Blur
+        #transforms.RandomApply([transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0))], p=0.3),  # Blur
         #transforms.RandomErasing(p=0.5, scale=(0.02, 0.2), ratio=(0.3, 3.3)),  # Erasing (Cutout)
 
         # Normalisation
