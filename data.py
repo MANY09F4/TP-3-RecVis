@@ -62,21 +62,14 @@ data_transforms_224_da_old = transforms.Compose([
 
 data_transforms_224_DA = transforms.Compose(
     [
-        # Convert to grayscale
-        transforms.Grayscale(num_output_channels=3),
-
-        # Augmentations
+        transforms.Grayscale(num_output_channels=3),         # Convert to grayscale
         transforms.RandomHorizontalFlip(p=0.5),              # Horizontal flip
         transforms.RandomRotation(15),                      # Random rotation
         transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),# Random crop
         transforms.RandomAffine(degrees=15, translate=(0.1, 0.1), scale=(0.9, 1.1), shear=10),  # Affine transforms
         transforms.RandomPerspective(distortion_scale=0.5, p=0.5),  # Perspective changes
-        transforms.RandomApply([transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0))], p=0.3),  # Blur
-        transforms.RandomErasing(p=0.5, scale=(0.02, 0.2), ratio=(0.3, 3.3)),  # Cutout
-
-        # Convert to tensor and normalize
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),  # Normalization
+        transforms.ToTensor(),                              # Convert to Tensor
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),  # Normalize
     ]
 )
 
