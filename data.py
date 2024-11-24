@@ -68,14 +68,14 @@ data_transforms_224_DA = transforms.Compose(
         transforms.RandomHorizontalFlip(p=0.5),              # Flip horizontal aléatoire
         transforms.RandomRotation(15),                      # Rotation aléatoire
         transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),# Recadrage aléatoire
-        transforms.RandomPerspective(distortion_scale=0.5, p=0.5),  # Perspective
+        #transforms.RandomPerspective(distortion_scale=0.5, p=0.5),  # Perspective
 
         # Convertir en tenseur
         transforms.ToTensor(),                               # PIL -> Tensor
 
         # Transformations sur Tensor
         transforms.RandomApply([transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0))], p=0.3),  # Blur
-        transforms.RandomErasing(p=0.5, scale=(0.02, 0.2), ratio=(0.3, 3.3)),  # Erasing (Cutout)
+        #transforms.RandomErasing(p=0.5, scale=(0.02, 0.2), ratio=(0.3, 3.3)),  # Erasing (Cutout)
 
         # Normalisation
         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
