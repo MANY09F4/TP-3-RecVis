@@ -29,7 +29,8 @@ data_transforms_224_gray_only = transforms.Compose(
         transforms.Resize((224, 224)),
         transforms.Grayscale(num_output_channels=3),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        #transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        transforms.Normalize(mean=[0.854, 0.854, 0.854], std=[0.191, 0.191, 0.191])
     ]
 )
 
@@ -77,7 +78,8 @@ data_transforms_224_DA = transforms.Compose(
         transforms.RandomErasing(p=0.5, scale=(0.02, 0.2), ratio=(0.3, 3.3)),  # Erasing (Cutout)
 
         # Normalisation
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),  # Normalisation
+        #transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        transforms.Normalize(mean=[0.854, 0.854, 0.854], std=[0.191, 0.191, 0.191])# Normalisation
     ]
 )
 
