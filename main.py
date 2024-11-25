@@ -315,19 +315,19 @@ def main():
 
                 # Dernières couches dégelées : learning rate légèrement réduit
                 {"params": [param for name, param in model.backbone.named_parameters()
-                            if "encoder.layer.11" in name], "lr":  args.lr/10},
+                            if "encoder.layer.11" in name], "lr":  args.lr},
 
                 {"params": [param for name, param in model.backbone.named_parameters()
-                            if "encoder.layer.10" in name], "lr":  args.lr/100},
+                            if "encoder.layer.10" in name], "lr":  args.lr},
 
                 {"params": [param for name, param in model.backbone.named_parameters()
-                        if "encoder.layer.9" in name], "lr": args.lr / 100},
+                        if "encoder.layer.9" in name], "lr": args.lr},
 
                 {"params": [param for name, param in model.backbone.named_parameters()
-                            if "layernorm.weight" in name], "lr":  args.lr/10},
+                            if "layernorm.weight" in name], "lr":  args.lr},
 
                 {"params": [param for name, param in model.backbone.named_parameters()
-                            if "layernorm.bias" in name], "lr":  args.lr/10},
+                            if "layernorm.bias" in name], "lr":  args.lr},
             ], momentum=args.momentum, weight_decay=1e-4)
 
     else:
