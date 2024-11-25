@@ -4,6 +4,7 @@ from transformers import ViTModel, AutoModel
 from torchvision import models
 from timm import create_model
 from transformers import AutoModelForImageClassification
+import torch
 
 nclasses = 500
 
@@ -185,6 +186,9 @@ class ConvNeXt_perso(nn.Module):
         # Ajouter une couche de classification pour 500 classes
         in_features = self.backbone.head.in_features  # Taille des embeddings de sortie
         self.backbone.head = nn.Identity()  # Supprimez l'ancienne tête de classification
+
+        self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
+
         self.classifier = nn.Sequential(
             nn.Dropout(0.3),  # Dropout pour régularisation
             nn.Linear(in_features, num_classes)  # Couche dense pour la classification
@@ -194,6 +198,8 @@ class ConvNeXt_perso(nn.Module):
         # Passer l'entrée dans le backbone
         features = self.backbone(x)
         # Passer les caractéristiques dans le classificateur
+        features = self.global_pool(features)  # Réduction spatiale (batch, channels, 1, 1)
+        features = torch.flatten(features, 1)  # Aplatir (batch, channels)
         logits = self.classifier(features)
         return logits
 
