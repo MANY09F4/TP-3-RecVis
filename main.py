@@ -232,24 +232,24 @@ def main():
     else:
         print("Using CPU")
 
-    train_dataset = datasets.ImageFolder(args.data + "/train_images", transform=data_transforms)
-    val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val)
+    #train_dataset = datasets.ImageFolder(args.data + "/train_images", transform=data_transforms)
+    #val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val)
 
-    # train_dataset = datasets.ImageFolder(args.data + "/train_images", transform=data_transforms)
-    # val_dataset_train = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms)
-    # combined_dataset = torch.utils.data.ConcatDataset([train_dataset, val_dataset_train])
-    # val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val)
+    train_dataset = datasets.ImageFolder(args.data + "/train_images", transform=data_transforms)
+    val_dataset_train = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms)
+    combined_dataset = torch.utils.data.ConcatDataset([train_dataset, val_dataset_train])
+    val_dataset = datasets.ImageFolder(args.data + "/val_images", transform=data_transforms_val)
 
     #train_dataset = create_class_balanced_subset(train_dataset, args.images_per_class, args.seed)
     #val_dataset = create_class_balanced_subset(val_dataset, int(np.floor(args.images_per_class*0.1)+1), args.seed)
 
     #Data initialization and loading
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=args.batch_size,
-        shuffle=True,
-        num_workers=args.num_workers,
-    )
+    # train_loader = torch.utils.data.DataLoader(
+    #     train_dataset,
+    #     batch_size=args.batch_size,
+    #     shuffle=True,
+    #     num_workers=args.num_workers,
+    # )
 
     val_loader = torch.utils.data.DataLoader(
         val_dataset,
@@ -259,12 +259,12 @@ def main():
     )
 
     # # DataLoader for the combined dataset
-    # train_loader = torch.utils.data.DataLoader(
-    #     combined_dataset,
-    #     batch_size=args.batch_size,
-    #     shuffle=True,  # Shuffle les données combinées
-    #     num_workers=args.num_workers,
-    # )
+    train_loader = torch.utils.data.DataLoader(
+        combined_dataset,
+        batch_size=args.batch_size,
+        shuffle=True,  # Shuffle les données combinées
+        num_workers=args.num_workers,
+    )
 
     # Setup optimizer
     #optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
