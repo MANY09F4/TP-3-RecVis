@@ -170,6 +170,38 @@ class DinoV2_perso(nn.Module):
         logits = self.classifier(cls_token)
         return logits
 
+
+class ViT_perso(nn.Module):
+    def __init__(self, num_classes=500, freeze_backbone=True):
+        super(ViT_perso, self).__init__()
+        # Charger le modèle ViT pré-entraîné
+        self.backbone = AutoModel.from_pretrained("google/vit-base-patch16-224-in21k")
+
+        # Geler ou dégeler des parties spécifiques du backbone
+        for name, param in self.backbone.named_parameters():
+            if "encoder.layer.11" in name or "encoder.layer.10" in name or "layernorm.weight" in name or "layernorm.bias" in name:  # Dernières couches
+                param.requires_grad = True  # Dégeler ces couches
+            else:
+                param.requires_grad = not freeze_backbone  # Geler le reste si freeze_backbone=True
+
+        # Ajouter une couche de classification pour 500 classes
+        hidden_size = self.backbone.config.hidden_size  # Taille des embeddings de sortie (par ex. 768)
+        self.classifier = nn.Sequential(
+            nn.Dropout(0.3),  # Dropout pour régularisation
+            nn.Linear(hidden_size, num_classes)  # Couche dense pour la classification
+        )
+
+    def forward(self, x):
+        # Passer l'entrée à travers le backbone
+        outputs = self.backbone(x)
+        # Extraire le token CLS (premier vecteur de la séquence)
+        cls_token = outputs.last_hidden_state[:, 0, :]
+        # Passer le token CLS dans le classificateur
+        logits = self.classifier(cls_token)
+        return logits
+
+
+
 class ConvNeXt_perso(nn.Module):
     def __init__(self, num_classes=500, freeze_backbone=True):
         super(ConvNeXt_perso, self).__init__()

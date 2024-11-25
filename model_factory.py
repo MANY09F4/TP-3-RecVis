@@ -1,7 +1,7 @@
 """Python file to instantite the model and the transform that goes with it."""
 
 from data import data_transforms_224_gray_only, data_transforms_224_DA, data_transforms, data_transforms_224, data_transforms_224_da, data_transforms_384, data_transforms_edge, data_transforms_224_da, data_transforms_400, data_transforms_512
-from model import ConvNeXt_perso, DinoV2_perso, DinoV2, EfficientNetV2M, ConvNextBase, Net, ResNet18, ResNet50, ResNet101, EfficientNetB4, VitBase16, EfficientNetB5, EfficientNetB6, EfficientNetB7
+from model import ViT_perso, ConvNeXt_perso, DinoV2_perso, DinoV2, EfficientNetV2M, ConvNextBase, Net, ResNet18, ResNet50, ResNet101, EfficientNetB4, VitBase16, EfficientNetB5, EfficientNetB6, EfficientNetB7
 
 
 class ModelFactory:
@@ -40,6 +40,8 @@ class ModelFactory:
             return DinoV2_perso()
         if self.model_name == "convnext_base_perso":
             return ConvNeXt_perso()
+        if self.model_name == "ViT_perso":
+            return ViT_perso()
         else:
             raise NotImplementedError("Model not implemented")
 
@@ -93,6 +95,11 @@ class ModelFactory:
             return data_transforms_224_DA
 
         if self.model_name == "convnext_base_perso":
+            if self.test_mode:
+                return data_transforms_224_gray_only
+            return data_transforms_224_DA
+
+        if self.model_name == "ViT_perso":
             if self.test_mode:
                 return data_transforms_224_gray_only
             return data_transforms_224_DA

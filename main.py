@@ -307,6 +307,26 @@ def main():
                         if "head.norm" in name], "lr": args.lr / 10},
 
         ], momentum=args.momentum, weight_decay=1e-4)
+
+    elif args.model_name == "ViT_perso":
+        optimizer = optim.SGD([
+                # Couche classifiante : learning rate élevé
+                {"params": model.classifier.parameters(), "lr":  args.lr},
+
+                # Dernières couches dégelées : learning rate légèrement réduit
+                {"params": [param for name, param in model.backbone.named_parameters()
+                            if "encoder.layer.11" in name], "lr":  args.lr/10},
+
+                {"params": [param for name, param in model.backbone.named_parameters()
+                            if "encoder.layer.10" in name], "lr":  args.lr/100},
+
+                {"params": [param for name, param in model.backbone.named_parameters()
+                            if "layernorm.weight" in name], "lr":  args.lr/10},
+
+                {"params": [param for name, param in model.backbone.named_parameters()
+                            if "layernorm.bias" in name], "lr":  args.lr/10},
+            ], momentum=args.momentum, weight_decay=1e-4)
+
     else:
         # Optimisation classique pour les autres modèles
         optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=1e-4)
