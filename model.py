@@ -184,7 +184,7 @@ class ConvNeXt_perso(nn.Module):
 
         # Ajouter une couche de classification pour 500 classes
         in_features = self.backbone.head.in_features  # Taille des embeddings de sortie
-        self.backbone.head = nn.Identity()  # Supprimez l'ancienne tête de classification
+        #self.backbone.head = nn.Identity()  # Supprimez l'ancienne tête de classification
         self.classifier = nn.Sequential(
             nn.Dropout(0.3),  # Dropout pour régularisation
             nn.Linear(in_features, num_classes)  # Couche dense pour la classification
