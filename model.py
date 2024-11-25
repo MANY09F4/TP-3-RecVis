@@ -150,7 +150,7 @@ class DinoV2_perso(nn.Module):
         self.backbone = AutoModel.from_pretrained("facebook/dinov2-base")
 
         for name, param in self.backbone.named_parameters():
-            if "encoder.layer.11" in name or "layer_norm" in name or "encoder.layer.10" in name or "encoder.layer.9" in name:  # Dernière couche
+            if "encoder.layer.11" in name or "encoder.layer.10" in name or "encoder.layer.9" in name or "layernorm.weight" in name or "layernorm.bias" in name:  # Dernière couche
                 param.requires_grad = True
             else:
                 param.requires_grad = False
@@ -179,7 +179,7 @@ class ViT_perso(nn.Module):
 
         # Geler ou dégeler des parties spécifiques du backbone
         for name, param in self.backbone.named_parameters():
-            if "encoder.layer.11" in name or "encoder.layer.10" in name or "layernorm.weight" in name or "layernorm.bias" in name:  # Dernières couches
+            if "encoder.layer.11" in name or "encoder.layer.10" in name or "encoder.layer.9" in name or "layernorm.weight" in name or "layernorm.bias" in name:  # Dernières couches
                 param.requires_grad = True  # Dégeler ces couches
             else:
                 param.requires_grad = not freeze_backbone  # Geler le reste si freeze_backbone=True
