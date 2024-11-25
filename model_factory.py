@@ -90,6 +90,11 @@ class ModelFactory:
                 return data_transforms_224_gray_only
             return data_transforms_224_DA
 
+        if self.model_name == "convnext_base_perso":
+            if self.test_mode:
+                return data_transforms_224_gray_only
+            return data_transforms_224_DA
+
         else:
             raise NotImplementedError("Transform not implemented")
 

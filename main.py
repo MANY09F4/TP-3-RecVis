@@ -292,6 +292,21 @@ def main():
             {"params": [param for name, param in model.backbone.named_parameters()
                         if "layer_norm" in name], "lr": args.lr / 10},
         ], momentum=args.momentum, weight_decay=1e-4)
+
+    elif args.model_name == "convnext_base_perso":
+        optimizer = optim.SGD([
+            # Couche classifiante : learning rate élevé
+            {"params": model.classifier.parameters(), "lr": args.lr},
+
+            # Dernière couche (encoder.layer.11) : learning rate légèrement réduit
+            {"params": [param for name, param in model.backbone.named_parameters()
+                        if "stages.3" in name], "lr": args.lr / 10},
+
+            # LayerNorm (régularisation finale) : learning rate intermédiaire
+            {"params": [param for name, param in model.backbone.named_parameters()
+                        if "head.norm" in name], "lr": args.lr / 10},
+
+        ], momentum=args.momentum, weight_decay=1e-4)
     else:
         # Optimisation classique pour les autres modèles
         optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=1e-4)

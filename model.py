@@ -169,6 +169,34 @@ class DinoV2_perso(nn.Module):
         logits = self.classifier(cls_token)
         return logits
 
+class ConvNeXt_perso(nn.Module):
+    def __init__(self, num_classes=500, freeze_backbone=True):
+        super(ConvNeXt_perso, self).__init__()
+        # Charger le modèle pré-entraîné ConvNeXt
+        self.backbone = create_model("convnext_base", pretrained=True)
+
+        # Geler ou dégeler des parties spécifiques du backbone
+        for name, param in self.backbone.named_parameters():
+            if "stages.3" in name or "norm" in name:  # Dernière étape et LayerNorm
+                param.requires_grad = True
+            else:
+                param.requires_grad = not freeze_backbone
+
+        # Ajouter une couche de classification pour 500 classes
+        in_features = self.backbone.head.in_features  # Taille des embeddings de sortie
+        self.backbone.head = nn.Identity()  # Supprimez l'ancienne tête de classification
+        self.classifier = nn.Sequential(
+            nn.Dropout(0.3),  # Dropout pour régularisation
+            nn.Linear(in_features, num_classes)  # Couche dense pour la classification
+        )
+
+    def forward(self, x):
+        # Passer l'entrée dans le backbone
+        features = self.backbone(x)
+        # Passer les caractéristiques dans le classificateur
+        logits = self.classifier(features)
+        return logits
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
