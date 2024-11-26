@@ -170,6 +170,33 @@ class DinoV2_perso(nn.Module):
         logits = self.classifier(cls_token)
         return logits
 
+class DinoV2_perso_1freeze(nn.Module):
+    def __init__(self, num_classes=500, freeze_backbone=True):
+        super(DinoV2_perso, self).__init__()
+        # Charger le modèle pré-entraîné
+        self.backbone = AutoModel.from_pretrained("facebook/dinov2-base")
+
+        for name, param in self.backbone.named_parameters():
+            if "encoder.layer.11" in name or "layernorm.weight" in name or "layernorm.bias" in name:  # Dernière couche
+                param.requires_grad = True
+            else:
+                param.requires_grad = False
+
+        # Ajouter une couche de classification pour 500 classes
+        hidden_size = self.backbone.config.hidden_size  # Taille des embeddings de sortie (ex. 768)
+        self.classifier = nn.Sequential(nn.Dropout(0.3),
+                                        nn.Linear(hidden_size, num_classes))  # Couche dense pour la classification
+
+
+    def forward(self, x):
+        # Passer l'entrée à travers la backbone
+        outputs = self.backbone(x)
+        # Extraire le token CLS (premier vecteur de la séquence)
+        cls_token = outputs.last_hidden_state[:, 0, :]
+        # Passer le token CLS dans le classificateur
+        logits = self.classifier(cls_token)
+        return logits
+
 
 class ViT_perso(nn.Module):
     def __init__(self, num_classes=500, freeze_backbone=True):

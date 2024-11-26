@@ -293,6 +293,23 @@ def main():
                             if "layernorm.bias" in name], "lr":  args.lr/10},
             ], momentum=args.momentum, weight_decay=1e-4)
 
+    elif args.model_name == "DinoV2_perso_1freeze":
+        # Groupes de paramètres avec learning rates spécifiques
+        optimizer = optim.SGD([
+                # Couche classifiante : learning rate élevé
+                {"params": model.classifier.parameters(), "lr":  args.lr},
+
+                # Dernières couches dégelées : learning rate légèrement réduit
+                {"params": [param for name, param in model.backbone.named_parameters()
+                            if "encoder.layer.11" in name], "lr":  args.lr/10},
+
+                {"params": [param for name, param in model.backbone.named_parameters()
+                            if "layernorm.weight" in name], "lr":  args.lr/10},
+
+                {"params": [param for name, param in model.backbone.named_parameters()
+                            if "layernorm.bias" in name], "lr":  args.lr/10},
+            ], momentum=args.momentum, weight_decay=1e-4)
+
     elif args.model_name == "convnext_base_perso":
         optimizer = optim.SGD([
             # Couche classifiante : learning rate élevé
