@@ -172,7 +172,7 @@ class DinoV2_perso(nn.Module):
 
 class DinoV2_perso_1freeze(nn.Module):
     def __init__(self, num_classes=500, freeze_backbone=True):
-        super(DinoV2_perso, self).__init__()
+        super(DinoV2_perso_1freeze, self).__init__()
         # Charger le modèle pré-entraîné
         self.backbone = AutoModel.from_pretrained("facebook/dinov2-base")
 
