@@ -223,9 +223,7 @@ def main():
     # load model and transform
     model, data_transforms = ModelFactory(args.model_name).get_all()
     _, data_transforms_val = ModelFactory(args.model_name, test_mode=True).get_all()
-    # if args.model is not None:                  #pourquoi ?
-    #     state_dict = torch.load(args.model)
-    #     model.load_state_dict(state_dict)
+
     if use_cuda:
         print("Using GPU")
         model.cuda()
@@ -271,7 +269,6 @@ def main():
 
         # Setup optimizer
     if args.model_name == "DinoV2_perso":
-        # Groupes de paramètres avec learning rates spécifiques
         optimizer = optim.SGD([
                 # Couche classifiante : learning rate élevé
                 {"params": model.classifier.parameters(), "lr":  args.lr},
@@ -294,7 +291,6 @@ def main():
             ], momentum=args.momentum, weight_decay=1e-4)
 
     elif args.model_name == "DinoV2_perso_1freeze":
-        # Groupes de paramètres avec learning rates spécifiques
         optimizer = optim.SGD([
                 # Couche classifiante : learning rate élevé
                 {"params": model.classifier.parameters(), "lr":  args.lr},

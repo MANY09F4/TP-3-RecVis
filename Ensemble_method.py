@@ -56,7 +56,6 @@ def opts() -> argparse.ArgumentParser:
     return args
 
 def pil_loader(path):
-    # open path as file to avoid ResourceWarning (https://github.com/python-pillow/Pillow/issues/835)
     with open(path, "rb") as f:
         with Image.open(f) as img:
             return img.convert("RGB")
@@ -90,7 +89,6 @@ def main() -> None:
                 data = data.cuda()
 
             if args.ensemble == "average" :
-                # Get average prediction from all models
                 avg_output = None
                 for model in models:
                     output = model(data)
